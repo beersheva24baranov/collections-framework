@@ -104,6 +104,23 @@ public abstract class CollectionTest {
     void streamTest() {
        runTest(array);
     }
+    @Test
+    void clearTest() {
+        collection.clear();
+        assertTrue(collection.isEmpty());
+    }
+
+    @Test
+    void addNonExistingTest() {
+        assertTrue(collection.add(200));
+        runTest(new Integer[] { 3, -10, 20, 1, 10, 8, 100, 17, 200 });
+    }
+
+    @Test
+    void addExistingTest() {
+        assertTrue(collection.add(17));
+        runTest(new Integer[] { 3, -10, 20, 1, 10, 8, 100, 17, 17 });
+    }
 
 }
 
