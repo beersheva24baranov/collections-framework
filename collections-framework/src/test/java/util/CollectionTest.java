@@ -17,41 +17,55 @@ import org.junit.jupiter.api.Test;
 public abstract class CollectionTest {
     private static final int N_ELEMENTS = 2_000_000;
     protected Collection<Integer> collection;
-    Integer[] array = {3, -10, 20, 1, 10, 8, 100 , 17};
+    Random random = new Random();
+    Integer[] array = { 3, -10 , 20, 1, 10, 8, 100, 17 };
+
     void setUp() {
         Arrays.stream(array).forEach(collection::add);
     }
+
     @Test
-    void addTest() {
-        assertTrue(collection.add(200));
-        assertTrue(collection.add(17));
-        assertEquals(array.length + 2, collection.size());
+    void removeIfTest() {
+        assertTrue(collection.removeIf(n -> n % 2 == 0));
+        assertFalse(collection.removeIf(n -> n % 2 == 0));
+        assertTrue(collection.stream().allMatch(n -> n % 2 != 0));
     }
+
+    @Test
+    void clearTest() {
+        collection.clear();
+        assertTrue(collection.isEmpty());
+    }
+
+    @Test
+    void addNonExistingTest() {
+        assertTrue(collection.add(200));
+        runTest(new Integer[] { 3, -10, 20, 1, 10, 8, 100, 17, 200 });
+    }
+
+    @Test
+    void addExistingTest() {
+        assertTrue(collection.add(17));
+        runTest(new Integer[] { 3, -10, 20, 1, 10, 8, 100, 17, 17 });
+    }
+
     @Test
     void sizeTest() {
         assertEquals(array.length, collection.size());
     }
-    
+
     @Test
     void removeTest() {
-        Integer[] expected = { -10, 20, 1, 10, 8, 100 };
         assertFalse(collection.remove(4));
         assertTrue(collection.remove(3));
         assertTrue(collection.remove(17));
-        assertArrayEquals(expected, collection.stream().toArray());
+        runTest(new Integer[] { -10, 20, 1, 10, 8, 100 });
     }
 
     @Test
     void isEmptyTest() {
         assertFalse(collection.isEmpty());
-        assertTrue(collection.remove(3));
-        assertTrue(collection.remove(-10));
-        assertTrue(collection.remove(20));
-        assertTrue(collection.remove(1));
-        assertTrue(collection.remove(10));
-        assertTrue(collection.remove(8));
-        assertTrue(collection.remove(100));
-        assertTrue(collection.remove(17));
+        Arrays.stream(array).forEach(n -> collection.remove(n));
         assertTrue(collection.isEmpty());
     }
 
@@ -64,14 +78,15 @@ public abstract class CollectionTest {
     @Test
     void iteratorTest() {
         Iterator<Integer> iterator = collection.iterator();
-        Integer[] expected = { 3, -10, 20, 1, 10, 8, 100, 17 };
-        Integer[] actual = new Integer[expected.length];
+        Integer[] actual = new Integer[array.length];
         int i = 0;
         while (iterator.hasNext()) {
             actual[i++] = iterator.next();
         }
-        assertArrayEquals(expected, actual);
+        runTest(actual);
+        assertThrowsExactly(NoSuchElementException.class, iterator::next);
     }
+
     @Test
     void removeInIteratorTest() {
         Iterator<Integer> it = collection.iterator();
@@ -104,23 +119,4 @@ public abstract class CollectionTest {
     void streamTest() {
        runTest(array);
     }
-    @Test
-    void clearTest() {
-        collection.clear();
-        assertTrue(collection.isEmpty());
-    }
-
-    @Test
-    void addNonExistingTest() {
-        assertTrue(collection.add(200));
-        runTest(new Integer[] { 3, -10, 20, 1, 10, 8, 100, 17, 200 });
-    }
-
-    @Test
-    void addExistingTest() {
-        assertTrue(collection.add(17));
-        runTest(new Integer[] { 3, -10, 20, 1, 10, 8, 100, 17, 17 });
-    }
-
 }
-
