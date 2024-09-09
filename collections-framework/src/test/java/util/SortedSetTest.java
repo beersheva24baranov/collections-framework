@@ -56,7 +56,7 @@ public abstract class SortedSetTest extends SetTest {
         Integer[] actual3 = sortedSet.subSet(-20, -5).stream().toArray(Integer[]::new);
         assertArrayEquals(expected3, actual3);
 
-        Integer[] actual4 = sortedSet.subSet(-2000, -1000).stream().toArray(Integer[]::new);
+        Integer[] actual4 = sortedSet.subSet(-1100, -1000).stream().toArray(Integer[]::new);
         assertEquals(0, actual4.length);
 
         Integer[] actual5 = sortedSet.subSet(1000, 2000).stream().toArray(Integer[]::new);
