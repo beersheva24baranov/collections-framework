@@ -1,10 +1,9 @@
 package util;
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class LinkedList<T> implements List<T> {
-    private static class Node<T> {
+    static class Node<T> {
         T obj;
         Node<T> next;
         Node<T> prev;
@@ -38,7 +37,7 @@ public class LinkedList<T> implements List<T> {
         return current;
     }
 
-    private void addNode(Node<T> node, int index) {
+    void addNode(Node<T> node, int index) {
         if (index == 0) {
             addHead(node);
         } else if (index == size) {
@@ -76,7 +75,7 @@ public class LinkedList<T> implements List<T> {
         }
     }
 
-    private Node<T> removeNode(Node<T> node) {
+    Node<T> removeNode(Node<T> node) {
         Node<T> res;
         if (node == head) {
             res = removeHead();

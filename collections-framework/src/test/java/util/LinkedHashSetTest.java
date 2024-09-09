@@ -3,22 +3,20 @@ package util;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 
-public class TreeSetTest extends SortedSetTest {
-    @Override
+public class LinkedHashSetTest extends SetTest {
     @BeforeEach
+    @Override
     void setUp() {
-        collection = new TreeSet<>();
+        collection = new LinkedHashSet<>();
         super.setUp();
     }
+
     @Override
     protected void runTest(Integer[] expected) {
-        Integer[] expectedSorted = Arrays.copyOf(expected, expected.length);
-        Arrays.sort(expectedSorted);
-        Integer[] actualSorted = collection.stream().toArray(Integer[]::new);
-        assertArrayEquals(expectedSorted, actualSorted);
+        Integer[] actual = collection.stream().toArray(Integer[]::new);
+        assertArrayEquals(expected, actual);
         assertEquals(expected.length, collection.size());
     }
 }
