@@ -201,7 +201,7 @@ public class TreeSet<T> implements SortedSet<T> {
     }
 
     private Node<T> getNextCurrent(Node<T> current) {
-        // Algorithm see on the board
+     
         return current.right != null ? getLeastFrom(current.right) : getGreaterParent(current);
     }
 
@@ -226,7 +226,7 @@ public class TreeSet<T> implements SortedSet<T> {
         Node<T> parent = node.parent;
         Node<T> child = node.left != null ? node.left : node.right;
         if (parent == null) {
-            root = child; // actual root removing
+            root = child; 
         } else if (node == parent.left) {
             parent.left = child;
         } else {
