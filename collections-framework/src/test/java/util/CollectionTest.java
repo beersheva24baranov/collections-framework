@@ -15,7 +15,7 @@ import java.util.Random;
 
 import org.junit.jupiter.api.Test;
 public abstract class CollectionTest {
-    private static final int N_ELEMENTS = 2_000_000;
+    public static final int N_ELEMENTS = 1_048_575;
     protected Collection<Integer> collection;
     Random random = new Random();
     Integer[] array = { 3, -10 , 20, 1, 10, 8, 100, 17 };
@@ -109,7 +109,9 @@ public abstract class CollectionTest {
         collection.clear();
         assertTrue(collection.isEmpty());
     }
-
+    protected void fillBigCollection() {
+        IntStream.range(0, N_ELEMENTS).forEach(i -> collection.add(random.nextInt()));
+    }
     protected void runTest(Integer[] expected) {
         assertArrayEquals(expected, collection.stream().toArray(Integer[]::new));
         assertEquals(expected.length, collection.size());
