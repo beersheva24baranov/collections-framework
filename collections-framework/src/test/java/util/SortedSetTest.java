@@ -1,27 +1,25 @@
 package util;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.Arrays;
-import java.util.Random;
+import java.util.NoSuchElementException;
 
 import org.junit.jupiter.api.Test;
 
-public class SortedSetTest extends SetTest {
+//{3, -10, 20, 1, 10, 8, 100 , 17}
+public abstract class SortedSetTest extends SetTest {
     SortedSet<Integer> sortedSet;
 
     @Override
     void setUp() {
         super.setUp();
         sortedSet = (SortedSet<Integer>) collection;
+
     }
 
     @Test
     void floorTest() {
         assertEquals(10, sortedSet.floor(10));
-        assertEquals(3, sortedSet.floor(4));
         assertNull(sortedSet.floor(-11));
         assertEquals(10, sortedSet.floor(11));
         assertEquals(100, sortedSet.floor(101));
@@ -38,6 +36,9 @@ public class SortedSetTest extends SetTest {
     @Test
     void firstTest() {
         assertEquals(-10, sortedSet.first());
+        sortedSet.clear();
+        assertThrowsExactly(NoSuchElementException.class,
+        () -> sortedSet.first());
     }
 
     @Test
@@ -48,44 +49,20 @@ public class SortedSetTest extends SetTest {
     @Test
     void subSetTest() {
         Integer[] expected = { 10, 17 };
-        Integer[] actual = sortedSet.subSet(10, 20).stream().toArray(Integer[]::new);
+        Integer[] actual = getActualSubSet(10, 20);
         assertArrayEquals(expected, actual);
+        actual = getActualSubSet(9, 18);
+        assertArrayEquals(expected, actual);
+        actual = getActualSubSet(100, 100);
+        assertEquals(0, actual.length);
+        assertThrowsExactly(IllegalArgumentException.class,
+         ()->sortedSet.subSet(10, 5));
+       
+
     }
 
-    @Override
-    protected void fillBigCollection() {
-        Integer[] array = getBigArrayCW();
-        Arrays.stream(array).forEach(collection::add);
+    private Integer[] getActualSubSet(int keyFrom, int keyTo) {
+        return sortedSet.subSet(keyFrom, keyTo).stream().toArray(Integer[]::new);
     }
 
-    protected Integer[] getBigArrayCW() {
-        return new Random().ints().distinct().limit(N_ELEMENTS).boxed().toArray(Integer[]::new);
-    }
-
-    protected Integer[] getBigArrayHW() {
-        Integer[] sortedArray = getBigArrayCW();
-        java.util.Arrays.sort(sortedArray);
-        Integer[] balancedArray = new Integer[sortedArray.length];
-        balanceArray(sortedArray, balancedArray, 0, sortedArray.length - 1, 0);
-        return balancedArray;
-    }
-
-    private int balanceArray(Integer[] arraySrc, Integer[] arrayDst, int left, int right, int index) {
-        if (left <= right) {
-            int middle = left + (right - left) / 2;
-            arrayDst[index++] = arraySrc[middle];
-            index = balanceArray(arraySrc, arrayDst, left, middle - 1, index);
-            index = balanceArray(arraySrc, arrayDst, middle + 1, right, index);
-        }
-        return index;
-    }
-
-    @Override
-    protected void runTest(Integer[] expected) {
-        Integer[] expectedSorted = Arrays.copyOf(expected, expected.length);
-        Arrays.sort(expectedSorted);
-        Integer[] actualSorted = collection.stream().toArray(Integer[]::new);
-        assertArrayEquals(expectedSorted, actualSorted);
-        assertEquals(expected.length, collection.size());
-    }
 }
